@@ -4,7 +4,7 @@ import "dotenv/config";
 const envSchema = z.object({
   NODE_ENV: z.enum(["dev", "test", "production"]).default("dev"),
   PORT: z.coerce.number().default(3333),
-  // DB_URL: z.string().default('mongodb://localhost:27017/mydb'),
+  DATABASE_URL: z.string(),
   // JWT_SECRET: z.string().
 });
 
