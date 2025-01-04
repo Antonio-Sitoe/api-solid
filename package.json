@@ -7,7 +7,8 @@
     "start": "node build/server.js",
     "dev": "tsx watch src/server.ts",
     "build": "tsup src --out-dir build",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "migrate": "npx prisma migrate dev"
   },
   "keywords": [
     "solid",
