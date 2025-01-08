@@ -4,7 +4,7 @@ import { IUsersRepository } from "../users-repository";
 
 export class PrismaUsersRepository implements IUsersRepository {
   async create(data: Prisma.UserCreateInput) {
-    await prisma.user.create({ data });
+    return await prisma.user.create({ data });
   }
 
   async findByEmail(email: string) {
