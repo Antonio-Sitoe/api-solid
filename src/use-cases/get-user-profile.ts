@@ -16,10 +16,8 @@ export class GetUserProfileUseCase {
   async execute({
     userId,
   }: GetUserProfileUseCaseRequest): Promise<GetUserProfileUseCaseResponse> {
-    const user = await this.userRepository.findByEmail(userId);
-
+    const user = await this.userRepository.findById(userId);
     if (!user) throw new resourceNOtFoundError();
-
     return {
       user,
     };

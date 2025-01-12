@@ -25,8 +25,8 @@ describe("teste if authentication works", () => {
     });
     expect(user.id).toEqual(expect.any(String));
   });
-  it("shold not be able to authenticate with wrong email", async () => {
-    expect(() =>
+  it("should not be able to authenticate with wrong email", async () => {
+    await expect(
       sut.execute({
         email: "antonio@gmail.com",
         password: "1234",
@@ -34,13 +34,17 @@ describe("teste if authentication works", () => {
     ).rejects.toBeInstanceOf(InvalidCredencialError);
   });
 
-  it("shold not be able to authenticate with wrong password", async () => {
+  it("should not be able to authenticate with wrong password", async () => {
+    const inMemoryRepository: InMemoryUsersRepository =
+      new InMemoryUsersRepository();
+
     await inMemoryRepository.create({
       email: "antonio@gmail.com",
       name: "antonio",
       password_hash: await hash("1234", 6),
     });
-    expect(() =>
+
+    await expect(
       sut.execute({
         email: "antonio@gmail.com",
         password: "12345",

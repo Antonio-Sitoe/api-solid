@@ -24,11 +24,11 @@ describe("GET USER PROFILE", () => {
     });
     expect(user.id).toEqual(expect.any(String));
   });
-  it("SHOLD NOT BE ABLE TO GET PROFILE WITH WRONG ID", async () => {
-    expect(() => {
+  it("should not be able to get profile with wrong ID", async () => {
+    await expect(
       sut.execute({
         userId: "ew",
-      });
-    }).toBeInstanceOf(resourceNOtFoundError);
+      }),
+    ).rejects.toBeInstanceOf(resourceNOtFoundError);
   });
 });
