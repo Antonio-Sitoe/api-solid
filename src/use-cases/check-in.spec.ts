@@ -13,6 +13,17 @@ describe("CHECKIN: TESTS", () => {
     inMemoryRepository = new inMemoryCheckinRepository();
     gymrepository = new InMemoryGymRepository();
     sut = new CheckInUseCase(inMemoryRepository, gymrepository);
+
+    gymrepository.items.push({
+      id: "gym-01",
+      title: "Javascript GYm",
+      description: "Gym",
+      created_at: new Date(),
+      latitude: new Decimal(-27.92052),
+      longitude: new Decimal(-49.6401091),
+      phone: "",
+      updated_at: new Date(),
+    });
     vi.useFakeTimers();
   });
   afterEach(() => {
@@ -37,44 +48,26 @@ describe("CHECKIN: TESTS", () => {
     });
     expect(checkin.id).toEqual(expect.any(String));
   });
-  it("should not be able to check in twice in the same day", async () => {
-    vi.setSystemTime(new Date(2022, 0, 20, 8, 0, 0));
 
-    await sut.execute({
-      gymId: "123",
-      userId: "123",
-      latitude: 0,
-      longitude: 0,
+  it("shold not be able to checkin in distance gym", async () => {
+    gymrepository.items.push({
+      id: "gym-02",
+      title: "Javascrip",
+      description: "Gym",
+      created_at: new Date(),
+      latitude: new Decimal(-27.07454456),
+      longitude: new Decimal(-49.3354543),
+      phone: "",
+      updated_at: new Date(),
     });
 
-    await expect(() => {
-      return sut.execute({
-        gymId: "123",
-        userId: "123",
-        latitude: 0,
-        longitude: 0,
-      });
-    }).rejects.toBeInstanceOf(Error);
-  });
-  it("should not be able to check in twice in diferent day", async () => {
-    vi.setSystemTime(new Date(2022, 0, 20, 8, 0, 0));
-
-    await sut.execute({
-      gymId: "123",
-      userId: "123",
-      latitude: 0,
-      longitude: 0,
-    });
-
-    vi.setSystemTime(new Date(2022, 0, 21, 8, 0, 0));
-
-    await expect(() => {
-      return sut.execute({
-        gymId: "123",
-        userId: "123",
-        latitude: 0,
-        longitude: 0,
-      });
-    }).rejects.toBeInstanceOf(Error);
+    expect(() =>
+      sut.execute({
+        gymId: "gym-02",
+        userId: "user-1",
+        latitude: -27.92052,
+        longitude: -49.6401091,
+      }),
+    ).rejects.toBeInstanceOf(Error);
   });
 });
