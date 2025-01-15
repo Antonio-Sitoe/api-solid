@@ -1,31 +1,38 @@
-import { hash } from "bcryptjs";
-import { IRegisterUseCase } from "@/zod/user-schema";
-import { IUsersRepository } from "@/repositories/users-repository";
-import { UserAlreadyExistsError } from "./erros/user-already-exists";
-import { User } from "@prisma/client";
+import { GymRepository } from "@/repositories/gym-repository";
+import { Gym } from "@prisma/client";
 
-interface RegisterUseCaseResponse {
-  user: User;
+interface CreateGymCaseRequest {
+  title: string;
+  description?: string | null;
+  latitude: number;
+  longitude: number;
+  phone: string | null;
 }
 
-export class RegisterUseCase {
-  constructor(private userRepository: IUsersRepository) {}
+interface CreateGymUseCaseResponse {
+  gym: Gym;
+}
+
+export class CreateGymUseCase {
+  constructor(private gymRepository: GymRepository) {}
 
   async execute({
-    email,
-    name,
-    password,
-  }: IRegisterUseCase): Promise<RegisterUseCaseResponse> {
-    const password_hash = await hash(password, 2);
-    const userWithThisEmail = await this.userRepository.findByEmail(email);
-    if (userWithThisEmail) {
-      throw new UserAlreadyExistsError();
-    }
-    const user = await this.userRepository.create({
-      email,
-      name,
-      password_hash,
+    latitude,
+    longitude,
+    phone,
+    title,
+    description,
+  }: CreateGymCaseRequest): Promise<CreateGymUseCaseResponse> {
+    const gym = await this.gymRepository.create({
+      latitude,
+      longitude,
+      title,
+      phone,
+      description,
     });
-    return { user };
+
+    return {
+      gym,
+    };
   }
 }

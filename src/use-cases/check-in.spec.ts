@@ -3,6 +3,7 @@ import { inMemoryCheckinRepository } from "@/repositories/in-memory/in-memory-ch
 import { CheckInUseCase } from "./checkin";
 import { InMemoryGymRepository } from "@/repositories/in-memory/in-memory-gym-repository";
 import { Decimal } from "@prisma/client/runtime/library";
+import { MaxDistanceError } from "./erros/max-distance-error";
 
 let inMemoryRepository: inMemoryCheckinRepository;
 let gymrepository: InMemoryGymRepository;
@@ -68,6 +69,6 @@ describe("CHECKIN: TESTS", () => {
         latitude: -27.92052,
         longitude: -49.6401091,
       }),
-    ).rejects.toBeInstanceOf(Error);
+    ).rejects.toBeInstanceOf(MaxDistanceError);
   });
 });
