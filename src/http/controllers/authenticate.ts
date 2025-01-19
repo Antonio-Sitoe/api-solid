@@ -11,12 +11,28 @@ export async function authenticate(
 
   try {
     const authenticateUseCase = makeAuthenticateUseCase();
-    await authenticateUseCase.execute({ email, password });
+    const { user } = await authenticateUseCase.execute({ email, password });
+
+    const token = await reply.jwtSign(
+      {},
+      {
+        sign: {
+          sub: user.id,
+        },
+      },
+    );
+
+    const { password_hash, ...props } = user;
+    console.log({ password_hash });
+
+    return reply.status(201).send({
+      token,
+      user: { ...props },
+    });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(400).send({ error: error.message });
     }
     throw error;
   }
-  return reply.status(201).send();
 }
