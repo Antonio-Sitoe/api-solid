@@ -22,13 +22,31 @@ export async function authenticate(
       },
     );
 
+    const refreshToken = await reply.jwtSign(
+      {},
+      {
+        sign: {
+          sub: user.id,
+          expiresIn: "7d",
+        },
+      },
+    );
+
     const { password_hash, ...props } = user;
     console.log({ password_hash });
 
-    return reply.status(201).send({
-      token,
-      user: { ...props },
-    });
+    return reply
+      .setCookie("refresh-token", refreshToken, {
+        path: "/",
+        secure: true,
+        sameSite: true,
+        httpOnly: true,
+      })
+      .status(200)
+      .send({
+        token,
+        user: { ...props },
+      });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(400).send({ error: error.message });

@@ -3,12 +3,21 @@ import { appRoutes } from "./http/routes";
 import { env } from "./env";
 import { ZodError } from "zod";
 import fastifyJwt from "@fastify/jwt";
+import fastifyCookie from "@fastify/cookie";
 
 export const app = fastify();
 
 app.register(appRoutes);
+app.register(fastifyCookie);
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
+  cookie: {
+    cookieName: "refresh-token",
+    signed: false,
+  },
+  sign: {
+    expiresIn: "10m",
+  },
 });
 
 app.setErrorHandler((error, _, reply) => {
